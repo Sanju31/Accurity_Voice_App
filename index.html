@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Accurity | UAD 3.6 Cold Call Roleplay Lab</title>
+<style>
+:root{--navy:#152238;--blue:#2857a4;--cyan:#eaf3ff;--ink:#202a38;--muted:#657184;--line:#dce3ec;--bg:#f4f7fb;--white:#fff;--green:#16794b;--amber:#a76500;--red:#b42318}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.5 Arial,Helvetica,sans-serif}
+header{background:linear-gradient(120deg,#111d32,#244b83);color:#fff;padding:26px max(20px,calc((100% - 1180px)/2))}
+header .eyebrow{font-size:12px;text-transform:uppercase;letter-spacing:2px;opacity:.8}h1{font-size:clamp(25px,4vw,36px);margin:6px 0}header p{max-width:780px;margin:0;color:#e4ecf8}
+main{max-width:1180px;margin:22px auto;padding:0 18px 40px}.layout{display:grid;grid-template-columns:310px 1fr;gap:18px;align-items:start}
+.panel,.card{background:var(--white);border:1px solid var(--line);border-radius:14px;padding:18px;box-shadow:0 3px 12px #14213b08}
+.panel{position:sticky;top:12px}.section-title{font-size:17px;margin:0 0 12px;color:var(--navy)}label{display:block;font-size:13px;font-weight:700;margin:13px 0 5px}
+select,input,textarea{width:100%;border:1px solid #cbd5e1;border-radius:8px;padding:10px 11px;font:inherit;background:white;color:var(--ink)}
+button{border:0;border-radius:9px;padding:10px 14px;font-weight:700;cursor:pointer;font:inherit}
+.primary{background:var(--blue);color:white}.secondary{background:#e9eef6;color:var(--navy)}.dark{background:var(--navy);color:white}.danger{background:#fff0ef;color:var(--red)}
+.btnrow{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}.small{font-size:12px;color:var(--muted)}
+main .topline{display:flex;justify-content:space-between;gap:12px;align-items:center;flex-wrap:wrap;margin-bottom:14px}
+.pill{display:inline-block;background:#eaf3ff;color:#234d8b;border-radius:99px;padding:5px 10px;font-size:12px;font-weight:700}
+.progress{height:7px;background:#e8edf4;border-radius:99px;overflow:hidden;margin:12px 0}.progress span{display:block;height:100%;background:#3b82d0;width:0;transition:width .2s}
+.scriptline{background:#f6f9fd;border-left:4px solid #4477bd;padding:13px 14px;border-radius:7px;margin:10px 0}
+.scriptline .tag{font-size:11px;text-transform:uppercase;letter-spacing:.7px;color:var(--blue);font-weight:700}
+.dialogue{display:grid;gap:10px;margin:12px 0}.bubble{padding:12px 14px;border-radius:12px;max-width:92%}.caller{background:#eaf3ff;border:1px solid #d6e6fc}.prospect{background:#f2f4f7;border:1px solid #e1e5eb;margin-left:auto}.speaker{font-size:11px;font-weight:800;text-transform:uppercase;color:var(--muted);margin-bottom:3px}
+.response-list{display:grid;gap:8px;margin-top:12px}.response-list button{text-align:left;background:#fff;border:1px solid var(--line);color:var(--ink);font-weight:500}.response-list button:hover{border-color:#6c91ca;background:#f7faff}
+.scoregrid{display:grid;grid-template-columns:repeat(5,1fr);gap:8px}.scorebox{background:#f6f8fb;border:1px solid var(--line);padding:10px;border-radius:10px}.scorebox strong{display:block;font-size:22px;color:var(--navy)}.scorebox span{font-size:11px;color:var(--muted)}
+.hidden{display:none!important}.checkrow{display:flex;align-items:flex-start;gap:8px;margin:10px 0}.checkrow input{width:auto;margin-top:4px}.feedback{padding:12px;border-radius:9px;background:#eef8f1;border:1px solid #cce8d4;margin-top:12px}
+.kpi{display:flex;gap:12px;flex-wrap:wrap}.kpi div{flex:1;min-width:120px;background:#f7f9fc;padding:12px;border-radius:10px;border:1px solid var(--line)}.kpi b{font-size:23px;display:block;color:var(--navy)}
+.tabs{display:flex;gap:7px;flex-wrap:wrap;margin-bottom:14px}.tabs button{background:#e8edf5;color:#314158}.tabs button.active{background:var(--navy);color:white}
+footer{text-align:center;color:var(--muted);font-size:12px;margin:22px 0}
+@media(max-width:800px){.layout{grid-template-columns:1fr}.panel{position:static}.scoregrid{grid-template-columns:repeat(2,1fr)}}
+@media print{header{background:#fff;color:#111;padding:15px}header p{color:#333}.panel,.btnrow,button{display:none!important}body{background:white}.layout{display:block}.card,.panel{box-shadow:none;break-inside:avoid}}
+</style>
+</head>
+<body>
+<header>
+  <div class="eyebrow">Accurity • Team Practice</div>
+  <h1>UAD 3.6 Cold Call Roleplay Lab</h1>
+  <p>Practice realistic AMC and lender conversations, handle objections, discover coverage needs, and confidently ask for a 15-minute meeting or a paid trial.</p>
+</header>
+<main>
+  <div class="layout">
+    <aside class="panel">
+      <h2 class="section-title">Set up the practice</h2>
+      <label for="trainee">Trainee name</label><input id="trainee" placeholder="Enter colleague's name">
+      <label for="persona">Prospect persona</label>
+      <select id="persona">
+        <option value="busy">Busy operations manager</option>
+        <option value="vendors">Satisfied with current vendors</option>
+        <option value="transition">Preparing for UAD 3.6</option>
+        <option value="live">Already ordering UAD 3.6</option>
+        <option value="email">“Just send me information”</option>
+        <option value="skeptical">Skeptical / challenges claims</option>
+      </select>
+      <label for="difficulty">Difficulty</label>
+      <select id="difficulty"><option value="1">Level 1 — Supportive</option><option value="2" selected>Level 2 — Realistic</option><option value="3">Level 3 — Challenging</option></select>
+      <div class="btnrow"><button class="primary" id="start">Start roleplay</button><button class="secondary" id="reset">Reset</button></div>
+      <div class="progress"><span id="progressbar"></span></div>
+      <div class="small" id="stepcount">Ready when you are.</div>
+      <hr style="border:0;border-top:1px solid var(--line);margin:18px 0">
+      <h3 class="section-title">Proof-point reminder</h3>
+      <p class="small">Use only current, approved facts. Do not state the 500-report count, 20/day production, 48–72-hour target, revision comparison, lender relationships, fees, or county coverage unless confirmed by operations.</p>
+      <label for="verified">Approved report count (optional)</label><input id="verified" placeholder="e.g., 500, if verified">
+      <label for="asof">Verified as-of date</label><input id="asof" type="date">
+      <p class="small">The practice does not send calls or emails. It is a local training simulator.</p>
+    </aside>
+
+    <section>
+      <div class="topline"><span class="pill" id="modepill">SIMULATION • NOT A LIVE CALL</span><span class="small">Goal: discover need → build trust → agree on next step</span></div>
+      <div class="card" id="welcome">
+        <h2 class="section-title">How to use this lab</h2>
+        <ol>
+          <li>Select a prospect persona and click <b>Start roleplay</b>.</li>
+          <li>Read the prospect's response and choose the best next line, or use the coaching prompt to practise your own words aloud.</li>
+          <li>Keep the call conversational. Ask one or two discovery questions instead of delivering the entire pitch.</li>
+          <li>Finish with a specific next step and review the scorecard.</li>
+        </ol>
+        <div class="scriptline"><div class="tag">Opening to practise</div>“Hi [Name], this is [Caller Name], calling on behalf of Accurity. Do you have 30 seconds? I’ll keep it brief.”</div>
+        <p class="small">For pair practice: one colleague acts as the caller and another acts as the prospect. Swap roles after each round.</p>
+      </div>
+
+      <div class="card hidden" id="game">
+        <div class="topline"><div><h2 class="section-title" id="stageTitle">Opening</h2><div class="small" id="stageHint"></div></div><span class="pill" id="stagepill">STEP 1</span></div>
+        <div class="dialogue" id="dialogue"></div>
+        <div id="choices" class="response-list"></div>
+        <div id="coach" class="scriptline hidden"><div class="tag">Try saying this aloud</div><div id="coachText"></div></div>
+        <div class="btnrow"><button class="secondary" id="showcoach">Show caller coaching line</button><button class="secondary" id="next" disabled>Continue</button></div>
+      </div>
+
+      <div class="card hidden" id="review">
+        <h2 class="section-title">Roleplay scorecard</h2>
+        <p id="reviewIntro">Review your performance and choose what to improve on the next call.</p>
+        <div class="scoregrid" id="scores"></div>
+        <div class="feedback" id="overall"></div>
+        <h3 class="section-title" style="margin-top:18px">Self-assessment</h3>
+        <div id="checks"></div>
+        <label for="notes">Coach notes / improvement target</label><textarea id="notes" rows="3" placeholder="Example: Ask a discovery question before describing all benefits."></textarea>
+        <div class="btnrow"><button class="primary" id="save">Save scorecard on this device</button><button class="secondary" id="download">Download scorecard (.txt)</button><button class="dark" id="again">Practise another scenario</button></div>
+        <p class="small" id="saveStatus">Saved records stay in this browser only. They are not shared with a central dashboard.</p>
+      </div>
+
+      <div class="card" style="margin-top:16px">
+        <h2 class="section-title">Call flow cheat sheet</h2>
+        <div class="tabs"><button class="active" data-tab="flow-opening">Opening</button><button data-tab="flow-discovery">Discovery</button><button data-tab="flow-value">Value proposition</button><button data-tab="flow-close">Close</button><button data-tab="flow-objections">Objections</button></div>
+        <div id="flow-opening" class="flowcontent"><b>Capture attention</b><p>Ask permission for 30 seconds. Identify Accurity and ask whether the prospect is already ordering UAD 3.6 or preparing for the transition.</p></div>
+        <div id="flow-discovery" class="flowcontent hidden"><b>Find the business need</b><ul><li>Which counties or markets matter most?</li><li>Where do you need extra capacity or coverage?</li><li>What turnaround and revision performance do you expect?</li></ul></div>
+        <div id="flow-value" class="flowcontent hidden"><b>Connect capability to need</b><p>Explain production experience, USPAP-compliant reporting, staff-appraiser coordination, coverage assessment, and capacity. Only share approved metrics.</p></div>
+        <div id="flow-close" class="flowcontent hidden"><b>Ask for a specific next step</b><p>Request a 15-minute discussion. If there is a fit, propose three to five paid trial assignments subject to approved coverage, pricing, and capacity.</p></div>
+        <div id="flow-objections" class="flowcontent hidden"><b>Listen → acknowledge → ask a relevant question</b><p>“We already have vendors.” → “That makes sense. Would an additional approved option for overflow or limited-coverage counties be useful?”</p><p>“Send information.” → “Of course. Would production experience, county coverage, or pricing and turnaround be most useful?”</p><p>“What is your turnaround?” → “It depends on county, complexity, and capacity. We’ll confirm the available turnaround before committing.”</p></div>
+      </div>
+    </section>
+  </div>
+  <footer>Accurity UAD 3.6 Roleplay Lab • Training use only • Verify all operational and compliance claims before external use.</footer>
+</main>
+<script>
+const scenarios = {
+ busy:[
+  {title:"Opening",hint:"Ask permission and make the purpose clear.",prospect:"Hello? I’m in the middle of something. Who is this?",choices:[
+   ["Ask permission and give a concise reason","Hi, this is [Caller] calling on behalf of Accurity. Do you have 30 seconds? We support UAD 3.6 appraisal needs and I wanted to ask if you're already ordering or still preparing for the transition.",3],
+   ["Launch into every proof point","Accurity has lots of AMCs, 500 reports, 20 per day, and 48–72-hour turnaround. Let me explain everything.",0],
+   ["Ask for the decision maker without context","Who handles appraisals there?",1]],coach:"Hi [Name], this is [Caller] on behalf of Accurity. Do you have 30 seconds? I’ll keep it brief. Are you already ordering UAD 3.6 reports, or still preparing for the transition?"},
+  {title:"Discovery",hint:"Find a need instead of pitching blindly.",prospect:"I have about 20 seconds. What do you need?",choices:[
+   ["Ask one focused question about coverage or capacity","Understood. Are there any counties where you need additional coverage or overflow capacity?",3],
+   ["Read the full USP aloud","We have a coordinated staff-appraiser model and several differentiators...",0],
+   ["Ask multiple questions at once","Which counties, what fees, how many orders, what turn times, and who are your vendors?",1]],coach:"Understood. One quick question: are there any counties where you need additional coverage or overflow capacity?"},
+  {title:"Close",hint:"Offer a concrete, low-friction next step.",prospect:"Email me something and I’ll look when I can.",choices:[
+   ["Tailor the email and agree on a follow-up date","Of course. Would our county coverage or UAD 3.6 production experience be more useful? I’ll send the relevant details. Is [date] okay for a brief follow-up?",3],
+   ["End without permission to follow up","Okay, I’ll send everything. Bye.",1],
+   ["Pressure them to book immediately","I need 15 minutes on your calendar now.",0]],coach:"Of course. Which would be more useful: our UAD 3.6 production experience or county coverage? I’ll send that and follow up on a date that works for you."}
+ ],
+ vendors:[
+  {title:"Opening",hint:"Respect their existing relationships.",prospect:"We already have enough appraisal vendors.",choices:[
+   ["Acknowledge and position as backup","That makes sense. We’re not asking you to replace a provider doing a good job. Would an additional approved option for overflow or limited-coverage counties be useful?",3],
+   ["Criticize their current vendors","Your vendors probably cannot handle UAD 3.6 as well as we can.",0],
+   ["Immediately list every metric","We have 500 reports and 20 per day...",1]],coach:"That makes sense. We’re not asking you to replace a provider doing a good job. Would an additional approved option for overflow or limited-coverage counties be useful?"},
+  {title:"Discovery",hint:"Look for a specific gap.",prospect:"Maybe, but our coverage is generally good.",choices:[
+   ["Ask about edge cases","Are there any counties or periods when capacity gets tight, even if your regular coverage is solid?",3],
+   ["Assume they have a problem","So you're struggling with your vendors?",0],
+   ["Ask for all their vendor details","Who are all your vendors and what do they charge?",0]],coach:"Are there any counties or periods when capacity gets tight, even if your regular coverage is solid?"},
+  {title:"Close",hint:"Offer a small evaluation, not a broad commitment.",prospect:"We won't switch our workflow.",choices:[
+   ["Offer a controlled paid trial if appropriate","Understood. We can keep this separate from your existing workflow. If approved coverage and pricing align, would a few paid trial assignments be worth evaluating?",3],
+   ["Promise guaranteed results","We guarantee no revisions and 48-hour delivery.",0],
+   ["End without next step","Okay, thanks.",1]],coach:"If approved coverage and pricing align, would a few paid trial assignments be worth evaluating?"}
+ ],
+ transition:[
+  {title:"Opening",hint:"Identify their implementation stage.",prospect:"We're still preparing for UAD 3.6.",choices:[
+   ["Ask about their plan and testing needs","Understood. Are you planning to test the workflow with a few assignments before cutover, or do you already have coverage in place?",3],
+   ["Tell them they are behind","You should have started already.",0],
+   ["Immediately ask for a large order","Can you send us 50 assignments?",0]],coach:"Are you planning to test the workflow with a few assignments before cutover, or do you already have coverage in place?"},
+  {title:"Discovery",hint:"Learn timing and priorities.",prospect:"We're still evaluating what the team needs.",choices:[
+   ["Ask about timing and counties","What is your expected transition window, and which counties should we focus on when assessing coverage?",3],
+   ["Guarantee easy implementation","Our process will make your transition effortless.",0],
+   ["Give a long generic pitch","Let me explain every part of our business...",1]],coach:"What is your expected transition window, and which counties should we focus on when assessing coverage?"},
+  {title:"Close",hint:"Agree on a useful next step.",prospect:"We might look at vendors next month.",choices:[
+   ["Schedule a relevant follow-up","That helps. Would a 15-minute discussion next month be useful to review your priority counties, requirements, and a possible paid trial?",3],
+   ["Demand an immediate decision","You should choose us today.",0],
+   ["Say you'll call repeatedly","I'll keep calling until you're ready.",0]],coach:"Would a 15-minute discussion next month be useful to review your priority counties and requirements?"}
+ ],
+ live:[
+  {title:"Opening",hint:"Recognize their experience and ask about gaps.",prospect:"Yes, we're already ordering UAD 3.6.",choices:[
+   ["Ask about workflow and uncovered needs","Great. How has the workflow been working so far? Are there any counties where you need additional coverage or capacity?",3],
+   ["Assume they are unhappy","What problems are your providers causing?",0],
+   ["Launch into a full company pitch","Let me tell you all about Accurity.",1]],coach:"How has the workflow been working so far? Are there any counties where you need additional coverage or capacity?"},
+  {title:"Discovery",hint:"Ask for their expectations.",prospect:"We mostly need predictable coverage and communication.",choices:[
+   ["Clarify markets and standards","Which counties are most important, and what turnaround and revision performance do you typically expect?",3],
+   ["Promise perfect performance","We can guarantee the fastest turnaround and zero revisions.",0],
+   ["Move straight to fees","What is your budget?",1]],coach:"Which counties are most important, and what turnaround and revision performance do you typically expect?"},
+  {title:"Close",hint:"Propose a measurable evaluation.",prospect:"We could consider another provider in a few counties.",choices:[
+   ["Ask for a meeting and validate trial scope","That sounds worth exploring. Could we schedule 15 minutes to review those counties, pricing, and capacity? If approved, we can discuss three to five paid trial assignments.",3],
+   ["Say all counties are covered","We cover every county.",0],
+   ["Ask for an immediate commitment","Can you approve us as a vendor right now?",1]],coach:"Could we schedule 15 minutes to review those counties, pricing, and capacity? If approved, we can discuss three to five paid trial assignments."}
+ ],
+ email:[
+  {title:"Opening",hint:"Turn a vague request into a relevant follow-up.",prospect:"Just send me some information.",choices:[
+   ["Ask what information is relevant","Of course. Which would be most useful: UAD 3.6 production experience, coverage by county, or pricing and turnaround?",3],
+   ["Send an oversized generic packet","I'll send everything we have.",1],
+   ["Refuse to email","No, we need to talk first.",0]],coach:"Which would be most useful: UAD 3.6 production experience, coverage by county, or pricing and turnaround?"},
+  {title:"Discovery",hint:"Confirm the audience and interest.",prospect:"County coverage would be most useful.",choices:[
+   ["Confirm markets and follow-up permission","Absolutely. Which counties should I include, and would it be alright if I followed up on [agreed date]?",3],
+   ["Send a coverage list without checking","I'll send our nationwide coverage.",0],
+   ["Ask for sensitive details unrelated to need","Send me your full vendor contracts.",0]],coach:"Which counties should I include, and would it be alright if I followed up on [agreed date]?"},
+  {title:"Close",hint:"Secure a clear next action.",prospect:"Send it to my work email.",choices:[
+   ["Confirm the address and agreed follow-up","Certainly. Is [email address] the best address? I'll send only the relevant approved details and follow up on the date we agreed.",3],
+   ["End with no follow-up plan","Done, goodbye.",1],
+   ["Add them to repeated campaigns without permission","I'll put you on all our lists.",0]],coach:"I'll send the relevant approved details and follow up on the date we agreed."}
+ ],
+ skeptical:[
+  {title:"Opening",hint:"Be transparent; do not overstate proof.",prospect:"You say you've completed 500 reports. Can you prove that?",choices:[
+   ["Use only verified figures and offer confirmation","I understand why you’d ask. I only want to share figures our operations team has verified. I can confirm the approved count and reporting date before sending details.",3],
+   ["Invent an audit or certification","Yes, it was independently audited.",0],
+   ["Argue with the prospect","You should just trust us.",0]],coach:"I understand why you’d ask. I’ll confirm the approved count and reporting date with operations before sending details."},
+  {title:"Discovery",hint:"Respond to performance questions carefully.",prospect:"Can you guarantee 48-hour delivery and no revisions?",choices:[
+   ["Set honest expectations","I wouldn't want to promise that without reviewing the assignment. Turnaround depends on county, complexity, and capacity; we can confirm the available service level before accepting work.",3],
+   ["Guarantee both","Absolutely, every report is delivered in 48 hours with no revisions.",0],
+   ["Avoid answering and change topic","Let's not worry about that.",1]],coach:"Turnaround depends on county, complexity, and capacity. We can confirm the available service level before accepting work."},
+  {title:"Close",hint:"Build trust with a verifiable next step.",prospect:"Why should we risk sending you an assignment?",choices:[
+   ["Offer a bounded paid evaluation","That's fair. We can first confirm coverage, pricing, scope, and capacity. If there's a fit, you can evaluate a small number of paid trial assignments against your own criteria.",3],
+   ["Claim guaranteed superiority","Our reports are always better than everyone else's.",0],
+   ["Push for a large volume","Give us 100 orders and you'll see.",0]],coach:"You can evaluate a small number of paid trial assignments against your own criteria after scope, pricing, coverage, and capacity are confirmed."}
+ ]
+};
+let steps=[],idx=0,total=0,selected=[],lastChoice=null,started=false;
+const $=id=>document.getElementById(id);
+function start(){steps=scenarios[$("persona").value];idx=0;total=0;selected=[];started=true;$("welcome").classList.add("hidden");$("review").classList.add("hidden");$("game").classList.remove("hidden");renderStep();}
+function renderStep(){const s=steps[idx];$("stageTitle").textContent=s.title;$("stageHint").textContent=s.hint;$("stagepill").textContent=`STEP ${idx+1} OF ${steps.length}`;$("dialogue").innerHTML=`<div class="bubble prospect"><div class="speaker">Prospect</div>${s.prospect}</div>`;$("choices").innerHTML="";$("next").disabled=true;$("coach").classList.add("hidden");$("showcoach").textContent="Show caller coaching line";lastChoice=null;
+s.choices.forEach((c,i)=>{const b=document.createElement("button");b.textContent=c[0];b.onclick=()=>choose(i);$("choices").appendChild(b)});$("progressbar").style.width=`${idx/steps.length*100}%`;$("stepcount").textContent=`Scenario step ${idx+1} of ${steps.length}`;}
+function choose(i){if(lastChoice!==null)return;lastChoice=i;const s=steps[idx],c=s.choices[i];total+=c[1];selected.push({stage:s.title,choice:c[0],points:c[1],max:3});$("dialogue").insertAdjacentHTML("afterbegin",`<div class="bubble caller"><div class="speaker">Your response choice</div>${c[0]}</div>`);[...$("choices").children].forEach((b,j)=>{b.disabled=true;if(j===i)b.style.borderColor=c[1]===3?"#16804a":c[1]===1?"#bd8300":"#c33"});$("next").disabled=false;$("next").textContent=idx===steps.length-1?"Finish & review":"Continue";$("progressbar").style.width=`${(idx+1)/steps.length*100}%`;}
+function next(){if(lastChoice===null)return;if(idx<steps.length-1){idx++;renderStep()}else review();}
+function review(){ $("game").classList.add("hidden");$("review").classList.remove("hidden");let max=steps.length*3,percent=Math.round(total/max*100);let scores=[
+ ["Discovery",Math.round((selected.filter(x=>x.stage==="Discovery").reduce((a,x)=>a+x.points,0)/Math.max(1,selected.filter(x=>x.stage==="Discovery").length*3))*25),25],
+ ["Trust & clarity",Math.round(percent/100*20),20],
+ ["Objection handling",Math.round(percent/100*20),20],
+ ["Accuracy",Math.round(percent/100*20),20],
+ ["Next-step close",Math.round(percent/100*15),15]
+ ];$("scores").innerHTML=scores.map(s=>`<div class="scorebox"><span>${s[0]}</span><strong>${s[1]}/${s[2]}</strong></div>`).join("");$("reviewIntro").textContent=`${$("trainee").value||"Trainee"} completed the ${$("persona").selectedOptions[0].text} scenario. Scenario score: ${total}/${max} (${percent}%).`;let msg=percent>=85?"Strong practice. Keep the conversation concise and make the next step specific.":percent>=60?"Good foundation. Improve the lower-scoring response choices and rehearse them aloud.":"Repeat the scenario. Focus on listening, asking one focused question, and avoiding unsupported promises.";$("overall").innerHTML=`<b>${percent>=85?"Strong performance":percent>=60?"Developing":"Needs another practice round"}</b><br>${msg}<br><br><b>Important:</b> This score reflects selected options in a training simulation, not a live voice or pronunciation assessment.`;$("checks").innerHTML=["Asked permission and kept the opening concise","Asked at least one useful discovery question","Acknowledged the prospect's position without arguing","Avoided unverified metrics or guarantees","Asked for a specific meeting, follow-up, or paid-trial next step"].map((x,i)=>`<label class="checkrow"><input type="checkbox" class="selfcheck" value="${x}"><span>${x}</span></label>`).join("");$("progressbar").style.width="100%";}
+function record(){const checks=[...document.querySelectorAll(".selfcheck:checked")].map(x=>x.value);return {trainee:$("trainee").value||"Not provided",persona:$("persona").selectedOptions[0].text,date:new Date().toLocaleString(),score:total,max:steps.length*3,answers:selected,selfAssessment:checks,notes:$("notes").value};}
+function save(){let r=record();let all=[];try{all=JSON.parse(localStorage.getItem("accurityRoleplays")||"[]")}catch(e){}all.push(r);localStorage.setItem("accurityRoleplays",JSON.stringify(all));$("saveStatus").textContent=`Saved locally. This browser now has ${all.length} saved roleplay record(s); records are not shared centrally.`;}
+function download(){const r=record();const txt=`ACCURITY UAD 3.6 ROLEPLAY SCORECARD\nTrainee: ${r.trainee}\nScenario: ${r.persona}\nDate: ${r.date}\nScore: ${r.score}/${r.max}\n\nRESPONSES\n${r.answers.map(a=>`${a.stage}: ${a.choice} (${a.points}/3)`).join("\n")}\n\nSELF-ASSESSMENT\n${r.selfAssessment.map(x=>"- "+x).join("\n")}\n\nCOACH NOTES\n${r.notes||"None added"}\n\nTraining simulation only; not a live voice or pronunciation assessment.`;const blob=new Blob([txt],{type:"text/plain"}),url=URL.createObjectURL(blob),a=document.createElement("a");a.href=url;a.download=`Accurity_Roleplay_${r.trainee.replace(/[^a-z0-9_-]/gi,"_")||"Trainee"}.txt`;a.click();URL.revokeObjectURL(url);}
+$("start").onclick=start;$("reset").onclick=()=>{started=false;$("game").classList.add("hidden");$("review").classList.add("hidden");$("welcome").classList.remove("hidden");$("progressbar").style.width="0";$("stepcount").textContent="Ready when you are."};$("next").onclick=next;$("showcoach").onclick=()=>{const el=$("coach");el.classList.toggle("hidden");el.querySelector("#coachText").textContent=steps[idx].coach;$("showcoach").textContent=el.classList.contains("hidden")?"Show caller coaching line":"Hide caller coaching line"};$("save").onclick=save;$("download").onclick=download;$("again").onclick=start;
+document.querySelectorAll("[data-tab]").forEach(b=>b.onclick=()=>{document.querySelectorAll("[data-tab]").forEach(x=>x.classList.remove("active"));b.classList.add("active");document.querySelectorAll(".flowcontent").forEach(x=>x.classList.add("hidden"));$(b.dataset.tab).classList.remove("hidden")});
+</script>
+</body>
+</html>
