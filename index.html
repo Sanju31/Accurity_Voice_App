@@ -30,6 +30,10 @@ main .topline{display:flex;justify-content:space-between;gap:12px;align-items:ce
 footer{text-align:center;color:var(--muted);font-size:12px;margin:22px 0}
 @media(max-width:800px){.layout{grid-template-columns:1fr}.panel{position:static}.scoregrid{grid-template-columns:repeat(2,1fr)}}
 @media print{header{background:#fff;color:#111;padding:15px}header p{color:#333}.panel,.btnrow,button{display:none!important}body{background:white}.layout{display:block}.card,.panel{box-shadow:none;break-inside:avoid}}
+
+.voice-card{border:1px solid #b8cbe8;background:linear-gradient(180deg,#fff,#f7faff)}
+.voice-status{display:flex;gap:9px;align-items:center;flex-wrap:wrap;margin:10px 0}.status-dot{width:9px;height:9px;border-radius:50%;background:#a76500;display:inline-block}.status-dot.on{background:#16804a}.voice-controls{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}.voice-transcript{max-height:280px;overflow:auto;background:#f8fafc;border:1px solid var(--line);border-radius:10px;padding:12px;white-space:pre-wrap;min-height:90px}.voice-transcript p{margin:0 0 10px}.voice-transcript b{color:var(--navy)}.voice-note{font-size:12px;color:var(--muted);background:#fff8e8;border:1px solid #f0d9a5;border-radius:8px;padding:10px;margin-top:10px}.voice-results{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:8px;margin:12px 0}.voice-results .scorebox{min-width:0}.voice-results strong{font-size:20px}@media(max-width:800px){.voice-results{grid-template-columns:repeat(2,1fr)}}
+
 </style>
 </head>
 <body>
@@ -77,6 +81,16 @@ footer{text-align:center;color:var(--muted);font-size:12px;margin:22px 0}
         </ol>
         <div class="scriptline"><div class="tag">Opening to practise</div>“Hi [Name], this is [Caller Name], calling on behalf of Accurity. Do you have 30 seconds? I’ll keep it brief.”</div>
         <p class="small">For pair practice: one colleague acts as the caller and another acts as the prospect. Swap roles after each round.</p>
+      </div>
+
+      <div class="card voice-card" id="voiceCard">
+        <div class="topline"><div><h2 class="section-title">Free browser voice practice</h2><div class="small">Speak as the Accurity caller; your browser speaks as the prospect.</div></div><span class="pill">NO API KEY</span></div>
+        <p>This version uses built-in browser speech recognition and speech synthesis with prepared, branching prospect replies. It does not use a paid AI service.</p>
+        <div class="voice-status"><span class="status-dot" id="voiceDot"></span><b id="voiceStatus">Ready to practise</b><span class="small" id="voiceTimer"></span></div>
+        <div class="voice-controls"><button class="primary" id="voiceStart">Start voice practice</button><button class="secondary" id="voiceSpeak" disabled>🎙 Speak your response</button><button class="secondary" id="voiceRepeat" disabled>Repeat prospect</button><button class="danger" id="voiceEnd" disabled>End call & score</button></div>
+        <div class="voice-note">Use a current version of Chrome or Edge. Allow microphone access when prompted. Speech recognition support varies by browser and may process audio through the browser provider. Pronunciation and articulation scores are only rough estimates; this app cannot reliably assess phonetic accuracy.</div>
+        <h3 class="section-title" style="margin-top:16px">Conversation transcript</h3><div class="voice-transcript" id="voiceTranscript" aria-live="polite">Start a practice call to begin.</div>
+        <div id="voiceScorePanel" class="hidden" style="margin-top:16px"><h3 class="section-title">Post-call score</h3><div id="voiceScoreGrid" class="voice-results"></div><div class="feedback" id="voiceFeedback"></div><h4>Recommended practice</h4><ul id="voiceCoaching"></ul><div class="btnrow"><button class="secondary" id="voiceDownload">Download voice report (.json)</button><button class="secondary" id="voiceSave">Save voice report on this device</button></div><p class="small" id="voiceSaveStatus">Reports are saved only in this browser unless you export them.</p></div>
       </div>
 
       <div class="card hidden" id="game">
@@ -218,6 +232,62 @@ function save(){let r=record();let all=[];try{all=JSON.parse(localStorage.getIte
 function download(){const r=record();const txt=`ACCURITY UAD 3.6 ROLEPLAY SCORECARD\nTrainee: ${r.trainee}\nScenario: ${r.persona}\nDate: ${r.date}\nScore: ${r.score}/${r.max}\n\nRESPONSES\n${r.answers.map(a=>`${a.stage}: ${a.choice} (${a.points}/3)`).join("\n")}\n\nSELF-ASSESSMENT\n${r.selfAssessment.map(x=>"- "+x).join("\n")}\n\nCOACH NOTES\n${r.notes||"None added"}\n\nTraining simulation only; not a live voice or pronunciation assessment.`;const blob=new Blob([txt],{type:"text/plain"}),url=URL.createObjectURL(blob),a=document.createElement("a");a.href=url;a.download=`Accurity_Roleplay_${r.trainee.replace(/[^a-z0-9_-]/gi,"_")||"Trainee"}.txt`;a.click();URL.revokeObjectURL(url);}
 $("start").onclick=start;$("reset").onclick=()=>{started=false;$("game").classList.add("hidden");$("review").classList.add("hidden");$("welcome").classList.remove("hidden");$("progressbar").style.width="0";$("stepcount").textContent="Ready when you are."};$("next").onclick=next;$("showcoach").onclick=()=>{const el=$("coach");el.classList.toggle("hidden");el.querySelector("#coachText").textContent=steps[idx].coach;$("showcoach").textContent=el.classList.contains("hidden")?"Show caller coaching line":"Hide caller coaching line"};$("save").onclick=save;$("download").onclick=download;$("again").onclick=start;
 document.querySelectorAll("[data-tab]").forEach(b=>b.onclick=()=>{document.querySelectorAll("[data-tab]").forEach(x=>x.classList.remove("active"));b.classList.add("active");document.querySelectorAll(".flowcontent").forEach(x=>x.classList.add("hidden"));$(b.dataset.tab).classList.remove("hidden")});
+
+// Free browser voice mode: Web Speech API + prepared branching prospect replies. No API key or backend.
+let voiceRecognition=null, voiceStartedAt=null, voiceTimerHandle=null, voiceTranscript=[], voiceReport=null, lastProspectLine='', voiceBusy=false, voiceTurnCount=0;
+const prospectOpenings={
+ busy:'Hello, this is the operations office. I have about a minute—what is this regarding?',
+ vendors:'We already work with a few appraisal vendors, so we are not really looking to add another one.',
+ transition:'We are still preparing for the UAD 3.6 transition. What exactly can Accurity help us with?',
+ live:'Yes, we already order UAD 3.6 reports. What would make your service different for us?',
+ email:'I am in the middle of something. Can you just send me an email?',
+ skeptical:'I get a lot of calls making big claims. What evidence do you have that Accurity can deliver?'
+};
+function voiceSetStatus(text,on=false){$('voiceStatus').textContent=text;$('voiceDot').classList.toggle('on',on)}
+function voiceAddLine(who,text){if(!text||!text.trim())return;const clean=text.trim();voiceTranscript.push({speaker:who,text:clean,at:new Date().toISOString()});const p=document.createElement('p');const b=document.createElement('b');b.textContent=who+': ';p.appendChild(b);p.appendChild(document.createTextNode(clean));$('voiceTranscript').appendChild(p);$('voiceTranscript').scrollTop=$('voiceTranscript').scrollHeight;}
+function voiceSpeak(text){lastProspectLine=text;try{window.speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(text);u.lang='en-US';u.rate=0.96;u.pitch=1;u.onstart=()=>voiceSetStatus('Prospect speaking…',true);u.onend=()=>{voiceBusy=false;voiceSetStatus('Your turn — tap Speak your response',true);$('voiceSpeak').disabled=false;$('voiceRepeat').disabled=false};u.onerror=()=>{voiceBusy=false;voiceSetStatus('Ready for your response');$('voiceSpeak').disabled=false};voiceBusy=true;$('voiceSpeak').disabled=true;window.speechSynthesis.speak(u)}catch(e){voiceBusy=false;voiceSetStatus('Speech playback unavailable');$('voiceSpeak').disabled=false}}
+function voiceStartCall(){
+ const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
+ if(!SR){alert('Speech recognition is not supported in this browser. Please open this page in an updated Google Chrome or Microsoft Edge browser.');return}
+ window.speechSynthesis?.cancel();voiceTranscript=[];voiceReport=null;voiceTurnCount=0;voiceStartedAt=Date.now();$('voiceTranscript').textContent='';$('voiceScorePanel').classList.add('hidden');$('voiceStart').disabled=true;$('voiceSpeak').disabled=true;$('voiceEnd').disabled=false;$('voiceRepeat').disabled=true;
+ voiceRecognition=new SR();voiceRecognition.lang='en-US';voiceRecognition.interimResults=false;voiceRecognition.continuous=false;voiceRecognition.maxAlternatives=1;
+ voiceRecognition.onstart=()=>voiceSetStatus('Listening… speak clearly',true);
+ voiceRecognition.onresult=e=>{const said=e.results?.[0]?.[0]?.transcript||'';if(!said.trim())return;voiceAddLine('Caller',said);voiceTurnCount++;const reply=chooseProspectReply(said);voiceSpeak(reply)};
+ voiceRecognition.onerror=e=>{voiceSetStatus(e.error==='not-allowed'?'Microphone permission denied':'Could not hear you — tap to try again');$('voiceSpeak').disabled=false};
+ voiceRecognition.onend=()=>{if(!voiceBusy && !$('voiceEnd').disabled){voiceSetStatus('Ready — tap Speak your response',true);$('voiceSpeak').disabled=false}};
+ voiceTimerHandle=setInterval(()=>{$('voiceTimer').textContent=Math.floor((Date.now()-voiceStartedAt)/1000)+' sec'},1000);
+ const persona=$('persona')?.value||'busy';voiceAddLine('Prospect',prospectOpenings[persona]||prospectOpenings.busy);voiceSpeak(prospectOpenings[persona]||prospectOpenings.busy);
+}
+function voiceListen(){if(!voiceRecognition||voiceBusy)return;try{$('voiceSpeak').disabled=true;voiceRecognition.start()}catch(e){voiceSetStatus('Tap once more to start listening');$('voiceSpeak').disabled=false}}
+function chooseProspectReply(raw){const t=raw.toLowerCase();const persona=$('persona')?.value||'busy';const difficulty=Number($('difficulty')?.value||2);
+ const generic=['Okay, but can you explain specifically how that would help our team?','That sounds broad. What would you need to know about our current workflow first?','I understand. How do you handle coverage, turnaround expectations, and revisions?'];
+ if(/email|send (me )?(it|information|details)|send something/i.test(t))return 'I can review an email. Please keep it relevant—what details would you send, and when would you follow up?';
+ if(/county|counties|coverage|area|location/i.test(t))return 'Which counties can you support, and how do you confirm coverage before we send an order?';
+ if(/turnaround|how fast|timeline|delivery|deadline/i.test(t))return 'What turnaround can you actually commit to for our order types, and how would you communicate a delay?';
+ if(/revision|rework|correction|quality/i.test(t))return 'How are revision requests handled, and who would be our contact if there is a problem?';
+ if(/price|pricing|cost|fee|paid trial|trial/i.test(t))return 'Before discussing a trial, I would need clear pricing, scope, and confirmation that you can cover our requirements. What would you propose?';
+ if(/meeting|calendar|schedule|15 minutes|next step|follow.?up/i.test(t))return 'Possibly. What would we cover in that meeting, and can you send a short agenda first?';
+ if(/uad 3\.6|uad|transition|implementation|training|workflow/i.test(t))return 'What part of the UAD 3.6 workflow are you equipped to support, and how would you verify that your process meets our needs?';
+ if(/vendor|vendors|already (have|use)|current provider|happy with/i.test(t))return 'We are reasonably happy with our current vendors. Why should we consider adding Accurity rather than keep our existing setup?';
+ if(/guarantee|best|fastest|always|every county|zero error|100%/i.test(t))return 'That is a strong claim. What evidence supports it? I do not want to rely on an unverified guarantee.';
+ if(/understand|appreciate|makes sense|fair point|of course/i.test(t))return 'Thanks for acknowledging that. What is one focused question you would ask to understand our needs before describing your service?';
+ if(t.split(/\s+/).length<7)return difficulty>=3?'I am short on time. Could you be more specific about the reason for your call and the value to our team?':'Could you give me a little more detail about how that applies to our appraisal workflow?';
+ if(persona==='busy')return difficulty>=3?'I need to jump to another call. What is the one clear next step you are asking me to take?':'All right. What is the most relevant benefit for a team like ours?';
+ if(persona==='vendors')return 'I hear you, but switching vendors is not on our agenda. Could Accurity support overflow or a specific gap without disrupting our current process?';
+ if(persona==='transition')return 'We are still mapping the process. How would you learn our requirements before recommending an approach?';
+ if(persona==='live')return 'We already have a process in place. How would you demonstrate fit without asking us to change everything?';
+ if(persona==='email')return 'Please send concise details. What exactly would be in the email, and when would you follow up?';
+ return generic[(voiceTurnCount-1)%generic.length];
+}
+function voiceCleanup(){if(voiceTimerHandle){clearInterval(voiceTimerHandle);voiceTimerHandle=null}try{voiceRecognition?.abort()}catch{}voiceRecognition=null;window.speechSynthesis?.cancel();voiceBusy=false;$('voiceStart').disabled=false;$('voiceSpeak').disabled=true;$('voiceRepeat').disabled=true;$('voiceEnd').disabled=true;}
+function voiceEndCall(){voiceCleanup();const transcript=voiceTranscript.map(x=>`${x.speaker}: ${x.text}`).join('\n');voiceReport=localVoiceScore(transcript);renderVoiceReport(voiceReport);voiceSetStatus('Call ended — score ready');}
+function localVoiceScore(transcript){const lines=transcript.split('\n').filter(x=>x.startsWith('Caller:'));const text=lines.map(x=>x.slice(7)).join(' ');const words=text.trim()?text.trim().split(/\s+/):[];const hasDiscovery=/which counties|coverage|capacity|turnaround|revision|workflow|what matters|what.*need|how do you/i.test(text);const hasClose=/meeting|schedule|follow.?up|trial|next step|15 minutes|send.*email/i.test(text);const hasTrust=/understand|makes sense|fair|of course|appreciate|thank you/i.test(text);const unsupported=/guarantee|zero revisions|every county|fastest|100%|always/i.test(text);const filler=(text.match(/\b(um|uh|like|you know)\b/gi)||[]).length;const spontaneous=Math.min(25,Math.round(Math.min(1,words.length/90)*12+(hasDiscovery?7:0)+(hasClose?6:0)));const call=Math.max(0,Math.min(15,10+(hasDiscovery?2:0)+(hasClose?3:0)-(unsupported?7:0)));const fluency=Math.max(0,Math.min(15,Math.round(Math.min(1,words.length/70)*13)-Math.min(5,filler)));return {total:Math.min(100,Math.min(25,words.length?16:0)+Math.min(20,words.length?13:0)+spontaneous+fluency+call),scores:[{name:'Pronunciation (rough estimate)',score:Math.min(25,words.length?16:0),max:25},{name:'Articulation (rough estimate)',score:Math.min(20,words.length?13:0),max:20},{name:'Spontaneity',score:spontaneous,max:25},{name:'Fluency (text proxy)',score:fluency,max:15},{name:'Call handling',score:call,max:15}],strengths:[...(hasTrust?['Used acknowledgement or rapport language']:[]),...(hasDiscovery?['Asked a discovery question']:[])],improvements:[...(hasDiscovery?[]:['Ask a focused discovery question about coverage, capacity, or workflow']),...(hasClose?[]:['Ask for a specific meeting, follow-up date, or next step']),...(unsupported?['Avoid unverified guarantees and performance claims']:[]),...(filler?['Reduce filler words and use short pauses']:[])],summary:'Free browser-side coaching score based on the transcript and simple language cues. Pronunciation and articulation are rough placeholders, not true audio-quality measurements.'}}
+function renderVoiceReport(r){$('voiceScorePanel').classList.remove('hidden');const scores=r.scores||[];$('voiceScoreGrid').innerHTML=scores.map(s=>`<div class="scorebox"><span>${escapeHTML(s.name)}</span><strong>${Number(s.score)||0}/${Number(s.max)||0}</strong></div>`).join('')+`<div class="scorebox"><span>Total</span><strong>${Number(r.total)||scores.reduce((a,s)=>a+(Number(s.score)||0),0)}/100</strong></div>`;$('voiceFeedback').textContent=r.summary||'Review the coaching points below.';$('voiceCoaching').innerHTML='';[...(r.strengths||[]).map(x=>'Strength: '+x),...(r.improvements||[]).map(x=>'Improve: '+x)].forEach(x=>{const li=document.createElement('li');li.textContent=x;$('voiceCoaching').appendChild(li)});if(!r.strengths?.length&&!r.improvements?.length){const li=document.createElement('li');li.textContent='Practise a concise opening, one discovery question, a truthful value statement, and a specific next step.';$('voiceCoaching').appendChild(li)}}
+function escapeHTML(s){return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
+function voiceDownload(){if(!voiceReport)return;const blob=new Blob([JSON.stringify({report:voiceReport,trainee:$('trainee').value||'Trainee',persona:$('persona').selectedOptions[0].text,transcript:voiceTranscript},null,2)],{type:'application/json'});const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download='Accurity_UAD36_Free_Voice_Scorecard.json';a.click();URL.revokeObjectURL(url)}
+function voiceSave(){if(!voiceReport)return;let all=[];try{all=JSON.parse(localStorage.getItem('accurityVoiceCalls')||'[]')}catch{}all.push({report:voiceReport,trainee:$('trainee').value||'Trainee',persona:$('persona').selectedOptions[0].text,date:new Date().toISOString(),transcript:voiceTranscript});localStorage.setItem('accurityVoiceCalls',JSON.stringify(all));$('voiceSaveStatus').textContent=`Saved ${all.length} voice report(s) in this browser only.`}
+$('voiceStart').addEventListener('click',voiceStartCall);$('voiceSpeak').addEventListener('click',voiceListen);$('voiceRepeat').addEventListener('click',()=>{if(lastProspectLine)voiceSpeak(lastProspectLine)});$('voiceEnd').addEventListener('click',voiceEndCall);$('voiceDownload').addEventListener('click',voiceDownload);$('voiceSave').addEventListener('click',voiceSave);
+
 </script>
 </body>
 </html>
